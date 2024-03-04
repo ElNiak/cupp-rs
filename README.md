@@ -105,10 +105,10 @@ Time elapsed for special char is: 4.836014ms
 Time elapsed for random number is: 84.831641ms
 Time elapsed for special char 2 is: 92.856952ms
 Time elapsed for random number 2 is: 84.831641ms
-Time elapsed for leet is: 593.471858ms
+Time elapsed for leet is: 593.471858ms (0.593471858s)
 [+] Wordlist generated with 1413721 words
 [+] File saved as: chris.txt
-Time elapsed is: 5.270197439s
+Time elapsed is: 1.086939079s
 ```
 
 Python version:
@@ -161,8 +161,10 @@ duration: 0.19226741790771484
 ```
 
 It is strange that Rust version is slower than Python version per words:
-* Rust:   0,000003728s per word
-* Python: 0,000005652s per word
+* Rust:  
+    * 0,000000769s/word
+* Python: 
+    * 0,000005652s/word
 
 It is also strange that the Rust version produce more words than the Python version.
 
@@ -179,3 +181,4 @@ Probably due to:
 * [ ] Add CI/CD
 * [ ] Add more benchmarks
 * [ ] Add more documentation
+* [ ] clippy

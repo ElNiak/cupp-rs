@@ -8,7 +8,7 @@ use reqwest::Client;
 use csv::ReaderBuilder;
 use flate2::read::GzDecoder;
 use std::{collections::HashSet, path::Path};
-use std::io::{self, Write};
+use std::io::{self, Write, BufWriter};
 use std::collections::HashMap;
 use std::io::BufRead;
 use std::thread;
@@ -504,10 +504,25 @@ fn generate_wordlist_from_profile(profile: &Profile, config: &Config) {
 
     // Writing to a file
     let file_path = format!("{}.txt", profile.name);
+    
+    // Tooooo slowww
+    /* 
     let mut file = File::create(file_path.clone()).expect("Failed to create file");
     for word in wordlist.clone() {
         writeln!(file, "{}", word).expect("Failed to write to file");
     }
+    */
+
+    let file = File::create(&file_path).expect("Failed to create file");
+    let mut writer = BufWriter::new(file);
+
+    for word in &wordlist { // Use a reference to avoid cloning if possible
+        writeln!(writer, "{}", word).expect("Failed to write to file");
+    }
+
+    // Make sure to flush the buffer to ensure all data is written to the file
+    writer.flush().expect("Failed to flush buffer");
+
 
     println!("\n[+] Wordlist generated with {} words", wordlist.clone().len());
     println!("[+] File saved as: {}", file_path);
