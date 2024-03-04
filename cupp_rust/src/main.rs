@@ -14,7 +14,9 @@ use std::io::BufRead;
 use std::thread;
 use std::time::Instant;
 
-mod config;
+pub mod config;
+
+
 use crate::config::Config;
 
 struct Section {
@@ -23,7 +25,7 @@ struct Section {
 }
 
 #[derive(Debug)]
-struct Profile {
+pub struct Profile {
     name: String,
     surname: String,
     nickname: String,
@@ -50,7 +52,7 @@ fn read_input(prompt: &str) -> String {
     input.trim().to_string()
 }
 
-fn interactive() -> Profile {
+pub fn interactive() -> Profile {
     println!("\n[+] Insert the information about the victim to make a dictionary");
     println!("[+] If you don't know all the info, just hit enter when asked! ;)\n");
 
@@ -209,7 +211,7 @@ fn apply_leet_transformations(wordlist: Vec<String>) -> Vec<String> {
     transformed_wordlist
 }
 
-fn generate_wordlist_from_profile(profile: &Profile, config: &Config) {
+pub fn generate_wordlist_from_profile(profile: &Profile, config: &Config) {
     // Start the timer
     let start = Instant::now();
     let mut wordlist = Vec::new();
@@ -535,7 +537,7 @@ fn generate_wordlist_from_profile(profile: &Profile, config: &Config) {
 }
 
 
-async fn alectodb_download(url: &str) -> Result<(), Box<dyn std::error::Error>> {
+pub async fn alectodb_download(url: &str) -> Result<(), Box<dyn std::error::Error>> {
     let target_file = "alectodb.csv.gz";
     let client = Client::new();
 
@@ -570,7 +572,7 @@ async fn alectodb_download(url: &str) -> Result<(), Box<dyn std::error::Error>> 
     Ok(())
 }
 
-async fn download_wordlist_http(section: &str, file_names: Vec<&str>, base_url: &str) -> Result<(), Box<dyn std::error::Error>> {
+pub async fn download_wordlist_http(section: &str, file_names: Vec<&str>, base_url: &str) -> Result<(), Box<dyn std::error::Error>> {
     let dir_path = format!("dictionaries/{}", section);
     fs::create_dir_all(&dir_path)?;
 
@@ -588,7 +590,7 @@ async fn download_wordlist_http(section: &str, file_names: Vec<&str>, base_url: 
     Ok(())
 }
 
-async fn download_wordlist(config: &Config) -> Result<(), Box<dyn std::error::Error>> {
+pub async fn download_wordlist(config: &Config) -> Result<(), Box<dyn std::error::Error>> {
     println!("Choose the section you want to download:\n");
     // Print options similar to the Python version...
     println!("     1   Moby            14      french          27      places");
@@ -697,7 +699,7 @@ fn get_cli_app() -> Command<'static> {
             .args(&["interactive", "improve", "download_wordlist", "alecto", "version"]))
 }
 
-fn load_wordlist_from_file(filename: &str) -> Result<Vec<String>, io::Error> {
+pub fn load_wordlist_from_file(filename: &str) -> Result<Vec<String>, io::Error> {
     let path = Path::new(filename);
     let file = File::open(&path)?;
     let buf = io::BufReader::new(file);
@@ -749,7 +751,7 @@ fn improve_dictionary(filename: &str, config: &Config) {
     }
 }  
 
-fn improve_wordlist(mut wordlist: Vec<String>, config: &Config) -> Vec<String> {
+pub fn improve_wordlist(mut wordlist: Vec<String>, config: &Config) -> Vec<String> {
     let mut improved_wordlist = Vec::new();
 
     // Append special characters
@@ -820,3 +822,143 @@ fn main() {
 
 
 }
+
+
+/**
+ * TESTS
+**/
+
+#[cfg(test)]
+mod tests {
+    use super::*; // Import the outer module to access functions and structs
+    use std::path::Path;
+    use std::fs::{self, File};
+    use std::io::{Write, BufReader, BufRead};
+
+    #[test]
+    fn test_config() {
+        let config = config::load_config("cupp.cfg").expect("Failed to read config");
+        assert!(config.years.years.contains(&2018), "2018 is in years");
+    }
+
+    #[test]
+    fn test_generate_wordlist_from_profile() {
+        // Setup - Create a test profile instance
+        let test_profile = Profile {
+            name: "John".to_string(),
+            surname: "Doe".to_string(),
+            nickname: "JD".to_string(),
+            birthdate: "01011990".to_string(),
+            partner_name: "Jane".to_string(),
+            partner_nickname: "JD".to_string(),
+            partner_birthdate: "01011991".to_string(),
+            child_name: "John".to_string(),
+            child_nickname: "JD".to_string(),
+            child_birthdate: "01012010".to_string(),
+            pet_name: "Garfield".to_string(),
+            company_name: "UCLouvain".to_string(),
+            keywords: vec!["password".to_string(), "qwerty".to_string()],
+            want_special_chars: true,
+            want_random_numbers: true,
+            leet_mode: true,
+        };
+
+        let config = config::load_config("cupp.cfg").expect("Failed to read config");
+
+        // Action - Generate the wordlist from the profile
+        generate_wordlist_from_profile(&test_profile, &config);
+
+        let wordlist = load_wordlist_from_file("John.txt").expect("Failed to load wordlist");
+
+        // Assertion - Check the wordlist contains expected values
+        assert!(wordlist.contains(&"John".to_string()), "Wordlist should contain the name");
+        assert!(wordlist.contains(&"Doe".to_string()), "Wordlist should contain the surname");
+        // Add more assertions as necessary to validate the wordlist content
+    }
+
+    #[test]
+    fn test_alectodb_download() {
+        let config = config::load_config("cupp.cfg").expect("Failed to read config");
+        // Call the function that should download the files
+        alectodb_download(&config.wordlist.alectourl);
+
+        // Assert that each file exists after the download
+        assert!(Path::new("alectodb-usernames.txt").exists(), "file alectodb-usernames.txt exists");
+        assert!(Path::new("alectodb-passwords.txt").exists(), "file alectodb-passwords.txt exists");
+
+        // Cleanup: Optionally delete the files after test to keep your environment clean
+        fs::remove_file("alectodb-usernames.txt").expect("Failed to delete alectodb-usernames.txt");
+        fs::remove_file("alectodb-passwords.txt").expect("Failed to delete alectodb-passwords.txt");
+    }
+
+    #[test]
+    fn test_parser() {
+        // Assume download_wordlist_http function initiates the download
+        // and returns Result to indicate success or failure
+        // TODO allow to add input in the function -> async make that complex
+        /*
+        let download_result = download_wordlist_http("16");
+        assert!(download_result.is_ok(), "Failed to download wordlist");
+
+        let filename = "dictionaries/hindi/hindu-names.gz";
+        assert!(Path::new(filename).exists(), "file does not exist");
+
+        // Cleanup after test to avoid clutter
+        let _ = fs::remove_file(filename);
+        */
+    }
+
+    #[test]
+    fn test_improve_dictionary() {
+        let filename = "test_improveme.txt";
+        let mut file = File::create(filename).expect("Failed to create test file");
+        writeln!(file, "password123\n2018password\npassword\n").expect("Failed to write to test file");
+
+        // Assuming Config struct and improve_dictionary function are defined correctly,
+        // and improve_wordlist function does exist and works as expected.
+        let config = config::load_config("cupp.cfg").expect("Failed to read config");
+
+        improve_dictionary(filename, &config);
+
+        // Verify contents of the output file
+        let improved_filename = format!("{}_improved.txt", filename);
+        let file = File::open(&improved_filename).expect("Failed to open improved file");
+        let reader = BufReader::new(file);
+
+        // Example assertion: Check the file is not empty
+        assert!(reader.lines().count() > 0, "Improved file should not be empty");
+
+        // Cleanup
+        fs::remove_file(filename).expect("Failed to delete test file");
+        fs::remove_file(improved_filename).expect("Failed to delete improved file");
+    }
+
+    #[test]
+    fn test_interactive() {
+        //TODO: Implement the test
+    }
+
+    #[tokio::test]
+    async fn test_download_wordlist() {
+        // Setup - Define the section, filenames, and base URL
+        let section = "russian";
+        let file_names = vec!["russian.lst.gz"];
+        let base_url = "http://ftp.funet.fi/pub/unix/security/passwd/crack/dictionaries/"; // Replace with actual base URL
+
+        // Action - Attempt to download the wordlist
+        let result = download_wordlist_http(section, file_names, base_url).await;
+        
+        // Ensure the download was successful
+        assert!(result.is_ok(), "Failed to download wordlist");
+
+        // Verify the file exists
+        let file_path = format!("dictionaries/{}/russian.lst.gz", section);
+        let file_exists = Path::new(&file_path).exists();
+        assert!(file_exists, "File does not exist");
+
+        // Cleanup - Remove the downloaded file to clean up after the test
+        let _cleanup = fs::remove_file(file_path);
+    }
+}
+
+

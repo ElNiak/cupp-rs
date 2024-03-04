@@ -57,8 +57,6 @@ pub struct Wordlist {
     pub dicturl: String,
 }
 
-
-
 pub fn load_config(file_path: &str) -> Result<Config, Box<dyn std::error::Error>> {
     let config_content = std::fs::read_to_string(file_path)?;
     let config: Config = toml::from_str(&config_content)?;
@@ -70,4 +68,5 @@ pub fn load_config(file_path: &str) -> Result<Config, Box<dyn std::error::Error>
     println!("Alecto URL: {}", config.wordlist.alectourl);
     println!("Downloader URL: {}", config.wordlist.dicturl);
     Ok(config)
-}
+}    
+

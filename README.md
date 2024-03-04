@@ -160,13 +160,13 @@ duration: 0.19226741790771484
 
 ```
 
-It is strange that Rust version is slower than Python version per words:
 * Rust:  
     * 0,000000769s/word
 * Python: 
     * 0,000005652s/word
 
-It is also strange that the Rust version produce more words than the Python version.
+It is strange that the Rust version produce more words than the Python version
+    * Need testing !
 
 It is my first Rust program, so it will be fun to analyse !
 
