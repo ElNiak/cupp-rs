@@ -41,8 +41,8 @@ pub struct Nums {
 
 #[derive(Deserialize, Debug)]
 pub struct Wls {
-    pub wcfrom: u32,
-    pub wcto: u32,
+    pub wcfrom: usize,
+    pub wcto: usize,
 }
 
 #[derive(Deserialize, Debug)]

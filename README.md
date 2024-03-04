@@ -106,9 +106,9 @@ Time elapsed for random number is: 84.831641ms
 Time elapsed for special char 2 is: 92.856952ms
 Time elapsed for random number 2 is: 84.831641ms
 Time elapsed for leet is: 593.471858ms (0.593471858s)
-[+] Wordlist generated with 1413721 words
+[+] Wordlist generated with 778613 words
 [+] File saved as: chris.txt
-Time elapsed is: 1.086939079s
+Time elapsed is: 980.881955ms
 ```
 
 Python version:

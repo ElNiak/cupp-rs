@@ -504,6 +504,9 @@ pub fn generate_wordlist_from_profile(profile: &Profile, config: &Config) {
     wordlist.sort_unstable();
     wordlist.dedup();
 
+    // Remove file too short or too long
+    wordlist.retain(|word| word.len() >= config.wls.wcfrom && word.len() <= config.wls.wcto);
+
     // Writing to a file
     let file_path = format!("{}.txt", profile.name);
     
