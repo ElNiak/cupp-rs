@@ -158,6 +158,8 @@ It is strange that Rust version is slower than Python version per words:
 
 It is also strange that the Rust version produce more words than the Python version.
 
+It is my first Rust program, so it will be fun to analyse !
+
 ## TODO
 
 * [ ] Add tests
