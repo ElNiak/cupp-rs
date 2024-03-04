@@ -1,0 +1,4 @@
+*.gz
+*.txt
+*.lock
+cupp_rust/target/*

@@ -12,6 +12,7 @@ use std::io::{self, Write};
 use std::collections::HashMap;
 use std::io::BufRead;
 use std::thread;
+use std::time::Instant;
 
 mod config;
 use crate::config::Config;
@@ -209,6 +210,8 @@ fn apply_leet_transformations(wordlist: Vec<String>) -> Vec<String> {
 }
 
 fn generate_wordlist_from_profile(profile: &Profile, config: &Config) {
+    // Start the timer
+    let start = Instant::now();
     let mut wordlist = Vec::new();
 
     let chars = config.specialchars.chars.clone();
@@ -466,17 +469,17 @@ fn generate_wordlist_from_profile(profile: &Profile, config: &Config) {
     // Writing to a file
     let file_path = format!("{}.txt", profile.name);
     let mut file = File::create(file_path.clone()).expect("Failed to create file");
-    for word in wordlist {
+    for word in wordlist.clone() {
         writeln!(file, "{}", word).expect("Failed to write to file");
     }
 
-    for (_, combinations) in kombi.iter() {
-        for combination in combinations {
-            writeln!(file, "{}", combination).expect("Unable to write to file");
-        }
-    }
+    println!("\n[+] Wordlist generated with {} words", wordlist.clone().len());
+    println!("[+] File saved as: {}", file_path);
+    // Stop the timer
+    let duration = start.elapsed();
 
-    println!("\n[+] Wordlist generated.");
+    // Print the elapsed time in seconds
+    println!("Time elapsed is: {:?}", duration);
     hyperspeed_print(&file_path.clone()).expect("Failed to print file");
 }
 
