@@ -306,6 +306,11 @@ fn generate_wordlist_from_profile(profile: &Profile, config: &Config) {
     let bd_combinations_child = generate_birthday_combinations(&profile.child_birthdate);
     wordlist.extend(bd_combinations_child.clone());
 
+    // Stop the timer
+    let duration_bd = start.elapsed();
+    // Print the elapsed time in seconds
+    println!("Time elapsed for birthday combination is: {:?}", duration_bd);
+
     let kombinaac = vec![&profile.pet_name, &petup, &profile.company_name, &companyup];
     let kombina = vec![&profile.name, &profile.surname, &profile.nickname, &nameup, &surnameup, &nickup];
     let kombinaw = vec![&profile.partner_name, &profile.partner_nickname, &wifeup, &wifenup, &profile.surname, &surnameup];
@@ -339,6 +344,7 @@ fn generate_wordlist_from_profile(profile: &Profile, config: &Config) {
         }
     }
 
+    
     // Placeholder for a HashMap to store all combinations
     let mut kombi: std::collections::HashMap<usize, Vec<String>> = std::collections::HashMap::new();
 
@@ -391,6 +397,11 @@ fn generate_wordlist_from_profile(profile: &Profile, config: &Config) {
     kombi.insert(11, generate_combinations(word.clone(), years_as_strings.clone(), None));
     kombi.entry(11).and_modify(|e| e.extend(generate_combinations(word.clone(), years_as_strings.clone(), Some("_"))));
 
+    // Stop the timer
+    let duration_kom = start.elapsed();
+    // Print the elapsed time in seconds
+    println!("Time elapsed for birthday kombina is: {:?}", duration_kom);
+
     // Extend each word with special characters if the user wants them
     if profile.want_special_chars {
         let special_chars = config.specialchars.chars.clone();
@@ -409,6 +420,10 @@ fn generate_wordlist_from_profile(profile: &Profile, config: &Config) {
         wordlist = extended_wordlist;
     }
 
+    // Stop the timer
+    let duration_sc = start.elapsed();
+    // Print the elapsed time in seconds
+    println!("Time elapsed for special char is: {:?}", duration_sc);
 
     if profile.want_random_numbers {
         let mut extended_wordlist = Vec::new();
@@ -428,6 +443,11 @@ fn generate_wordlist_from_profile(profile: &Profile, config: &Config) {
         wordlist = extended_wordlist;
     }
 
+    // Stop the timer
+    let duration_rn = start.elapsed();
+    // Print the elapsed time in seconds
+    println!("Time elapsed for random number is: {:?}", duration_rn);
+
     if profile.want_special_chars {
         let special_chars = config.specialchars.chars.clone();
         // Append special characters to each combination
@@ -441,6 +461,11 @@ fn generate_wordlist_from_profile(profile: &Profile, config: &Config) {
             wordlist.extend(extended_combinations);
         }
     }
+
+    // Stop the timer
+    let duration_sc2 = start.elapsed();
+    // Print the elapsed time in seconds
+    println!("Time elapsed for special char 2 is: {:?}", duration_sc2);
     
     if profile.want_random_numbers {
         let number_range = nums.clone(); 
@@ -456,9 +481,20 @@ fn generate_wordlist_from_profile(profile: &Profile, config: &Config) {
         }
     }
 
+
+    // Stop the timer
+    let duration_rn2 = start.elapsed();
+    // Print the elapsed time in seconds
+    println!("Time elapsed for random number 2 is: {:?}", duration_rn);
+
     if profile.leet_mode {
         wordlist = apply_leet_transformations(wordlist);
     }
+
+    // Stop the timer
+    let duration_leet = start.elapsed();
+    // Print the elapsed time in seconds
+    println!("Time elapsed for leet is: {:?}", duration_leet);
 
 
 

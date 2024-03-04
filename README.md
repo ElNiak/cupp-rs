@@ -17,8 +17,9 @@ That is why CUPP was born, and it can be used in situations like legal penetrati
 $ cd cupp_rust
 
 # Build 
-$ cargo build
+$ cargo build --release
 ```
+
 
 ```bash
 # Run
@@ -44,7 +45,7 @@ OPTIONS:
 
 ```bash
 # Run binrary
-$ ./target/debug/cupp_rust -h
+$ ./target/release/cupp_rs -h
 OPTIONS:
     -a                   Parse default usernames and passwords directly from Alecto DB. Project
                          Alecto uses purified databases of Phenoelit and CIRT which were merged and
@@ -67,7 +68,7 @@ OPTIONS:
 Rust version:
 
 ```bash
-$ ./target/debug/cupp_rust -i
+$ ./target/release/cupp_rs -i
 Leet mapping for 'a': 4
 Special chars: ["!", "@", "#", "$", "%%", "&", "*"]
 Num range: 0 to 100
@@ -98,9 +99,16 @@ Interactive mode selected
 > Do you want to add special chars at the end of words? Y/[N]: Y
 > Do you want to add some random numbers at the end of words? Y/[N]: Y
 > Leet mode? (i.e. leet = 1337) Y/[N]: Y
+Time elapsed for birthday combination is: 471.062µs
+Time elapsed for birthday kombina is: 3.766712ms
+Time elapsed for special char is: 4.836014ms
+Time elapsed for random number is: 84.831641ms
+Time elapsed for special char 2 is: 92.856952ms
+Time elapsed for random number 2 is: 84.831641ms
+Time elapsed for leet is: 593.471858ms
 [+] Wordlist generated with 1413721 words
 [+] File saved as: chris.txt
-Time elapsed is: 17.118449792s
+Time elapsed is: 5.270197439s
 ```
 
 Python version:
