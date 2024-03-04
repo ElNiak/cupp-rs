@@ -160,6 +160,10 @@ It is also strange that the Rust version produce more words than the Python vers
 
 It is my first Rust program, so it will be fun to analyse !
 
+Probably due to:
+* Strings in Python are immutable, and one of benefits of this is they can be cloned by reference. This allows an optimization: if one of strings is empty, then there is no concatenation performed, instead reference to another non-empty string is returned. If you change initial string from "" to something else like "_", then they cannot do this trick anymore and have to do a fair byte-by-byte copy. With this small change python runtime will double and will be about the same as Rust. 
+* In Rust this kind of optimizations cannot be implemented in existing push_str because it accepts borrowed string slice and taking reference to it will violate ownership rules. 
+
 ## TODO
 
 * [ ] Add tests
