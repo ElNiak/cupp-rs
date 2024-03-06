@@ -182,3 +182,4 @@ Probably due to:
 * [ ] Add more benchmarks
 * [ ] Add more documentation
 * [ ] clippy
+* [ ] automatic web scraping
